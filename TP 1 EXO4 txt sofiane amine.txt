@@ -1,0 +1,314 @@
+MAIN
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        //Création du scanner
+        Scanner sc = new Scanner(System.in);
+        
+        //Création du client
+        Client client = new Client(1, "Elfarh", "soso@gmail.com");
+
+        //Création des produits
+        Produit produit1 = new Produit(1, "Basket", 400, 2);
+        Produit produit2 = new Produit(2, "jouet", 300, 3);
+        Produit produit3 = new Produit(3, "Chaussettes", 20, 2);
+        
+        //Création du magasin
+        Magasin magasin = new Magasin();
+
+        //ajout produits dans le magasin
+        magasin.ajouterProduit(produit1);
+        magasin.ajouterProduit(produit2);
+        magasin.ajouterProduit(produit3);
+
+        //panier
+        Panier panier = new Panier();
+
+        int choix = 0;
+
+        // Boucle pour que le client choisisse l'action qu'il souhaite
+        while (choix != 5) {
+
+            System.out.println("--- Menu Magasin ---");
+            System.out.println("1. Afficher les produits disponibles");
+            System.out.println("2. Ajouter un produit au panier");
+            System.out.println("3. Afficher le panier");
+            System.out.println("4. Passer la commande");
+            System.out.println("5. Quitter");
+
+            System.out.println("Entrez votre choix :");
+            choix = sc.nextInt();
+            sc.nextLine();
+
+            if (choix == 1) {
+                magasin.afficherProduitsDisponibles();
+            }
+
+            else if (choix == 2) {
+                System.out.println("Entrez le nom du produit :");
+                String nom = sc.nextLine();
+
+                Produit produit = magasin.trouverProduitParNom(nom);
+
+                if (produit != null) {
+                    panier.ajouterProduit(produit);
+                    System.out.println("Produit ajouté au panier.");
+                }
+                else {
+                    System.out.println("Produit introuvable.");
+                }
+            }
+
+            else if (choix == 3) {
+                panier.afficherPanier();
+                System.out.println("Total : " + panier.calculerTotal());
+            }
+
+            else if (choix == 4) {
+                Commande commande = new Commande(1, client, panier.getProduits());
+                commande.afficherDetailsCommande();
+            }
+
+            else if (choix == 5) {
+                System.out.println("Au revoir.");
+            }
+
+            else {
+                System.out.println("Erreur");
+            }
+        }
+    }
+}
+
+
+PRODUIT
+
+public class Produit {
+    // Déclaration des attributs
+    private int id;
+    private String nom;
+    private int prix;
+    private int quantite;
+    
+    //Constructeur pour initialiser les attributs
+    public Produit(int id, String nom, int prix, int quantite) {
+        this.id = id;
+        this.nom = nom;
+        this.prix = prix;
+        this.quantite = quantite;
+    }
+    
+    // Création du getter pour id, nom, prix,quantite
+    public int getId() {
+        return id;
+    }
+ 
+    public String getNom() {
+        return nom;
+    }
+ 
+    public int getPrix() {
+        return prix;
+    }
+    
+    public int getQuantite() {
+        return quantite;
+    }
+
+
+    // Création du setter pour id, nom, prix,quantite
+    public void setId(int id) {
+        this.id = id;
+    }
+ 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+ 
+    public void setPrix(int prix) {
+        this.prix = prix;
+    }
+    
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
+    }
+    // Détail Produit
+    public void afficherDetails() {
+        System.out.println("Id : " + id + " Nom : " + nom + " Prix : " + prix + " Quantite : " + quantite );
+    }
+
+
+}
+
+
+CLIENT
+
+public class Client {
+    // Déclaration des attributs
+    private int id;
+    private String nom;
+    private String email;
+    
+    //Constructeur pour initialiser les attributs
+    public Client(int id, String nom, String email) {
+        this.id = id;
+        this.nom = nom;
+        this.email = email;
+    }
+    
+    // Création du getter pour id, nom, email
+    public int getId() {
+        return id;
+    }
+ 
+    public String getNom() {
+        return nom;
+    }
+ 
+    public String getEmail() {
+        return email;
+    }
+    
+
+    // Création du setter pour id, nom, email
+    public void setId(int id) {
+        this.id = id;
+    }
+ 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+ 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    //Detail client
+    public void afficherDetails() {
+        System.out.println("Id : " + id + " Nom : " + nom + " Email : " + email );
+    }
+}
+
+PANIER
+
+public class Panier {
+    // Liste de produits
+    private ArrayList<Produit> produits;
+
+    //Création du panizr
+    public Panier() {
+        produits = new ArrayList<>();
+    }
+
+    // Methode ajout produit dans le panier
+    public void ajouterProduit(Produit produit) {
+        produits.add(produit);
+    }
+
+    // Supprime un produit dans le panier
+    public void supprimerProduit(Produit produit) {
+        produits.remove(produit);
+    }
+
+    //Affiche les produits du panier
+    public void afficherPanier() {
+        for (Produit produit : produits) {
+            produit.afficherDetails();
+        }
+    }
+
+    //Calcul total panier
+    public int calculerTotal() {
+        int total = 0;
+
+        for (Produit produit : produits) {
+            total = total + produit.getPrix();
+        }
+
+        return total;
+    }
+
+    // Récupération liste des produits
+    public ArrayList<Produit> getProduits() {
+        return produits;
+    }
+}
+
+
+COMMANDE
+public class Commande {
+
+    private int idCommande;
+    private Client client;
+    private ArrayList<Produit> produitsCommandes;
+    private int total;
+
+    //Création commande
+    public Commande(int idCommande, Client client, ArrayList<Produit> produitsCommandes) {
+        this.idCommande = idCommande;
+        this.client = client;
+        this.produitsCommandes = produitsCommandes;
+        total = 0;
+
+        //Calcul du total de la commande
+        for (Produit produit : produitsCommandes) {
+            total = total + produit.getPrix();
+        }
+    }
+
+    //Détail commande
+    public void afficherDetailsCommande() {
+        System.out.println("Id commande : " + idCommande);
+        System.out.println("Client : " + client.getNom());
+        System.out.println("Produits commande :");
+
+        // Affichage produits 
+        for (Produit produit : produitsCommandes) {
+            produit.afficherDetails();
+        }
+
+        // Affichage total
+        System.out.println("Total : " + total);
+    }
+}
+
+
+MAGASIN
+
+public class Magasin {
+
+    // liste des produits
+    private ArrayList<Produit> produits;
+
+    // création du magasin
+    public Magasin() {
+        produits = new ArrayList<>();
+    }
+
+    // ajout produit dans le magasin
+    public void ajouterProduit(Produit produit) {
+        produits.add(produit);
+    }
+
+    // affichage produit dispos
+    public void afficherProduitsDisponibles() {
+        for (Produit produit : produits) {
+            if (produit.getQuantite() > 0) {
+                produit.afficherDetails();
+            }
+        }
+    }
+
+    // Recherche produit par nom
+    public Produit trouverProduitParNom(String nom) {
+        for (Produit produit : produits) {
+            if (produit.getNom().equals(nom)) {
+                return produit;
+            }
+        }
+        return null;
+    }
+}
